@@ -1,0 +1,74 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+#
+# Complete the 'getMaxCharCount' function below.
+#
+# The function is expected to return an INTEGER_ARRAY.
+# The function accepts following parameters:
+#  1. STRING s
+#  2. 2D_INTEGER_ARRAY queries
+#
+
+def getMaxCharCount(s, queries):
+    # queries is a n x 2 array where queries[i][0] and queries[i][1] represents x[i] and y[i] for the ith query.
+    
+    # make string case insensitive
+    s = s.casefold()
+    
+    # definitions
+    answer = []
+    
+    # counter
+    q = 0
+    
+    while q < len(queries):
+        # set intervals
+        intervalStart = queries[q][0]
+        intervalEnd = queries [q][1]
+        
+        maxChar = 'a'
+        maxCharCount = 0
+        
+        # calculate maxCharCount for this interval
+        for i in range(intervalStart, intervalEnd + 1):
+            
+            if s[i] > maxChar:
+                maxChar = s[i]
+                maxCharCount = 1
+            elif s[i] == maxChar:
+                maxCharCount += 1
+        
+        # add answer to list
+        answer.append(maxCharCount)
+            
+        q += 1
+    
+    return answer
+    
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    n = int(input().strip())
+
+    s = input()
+
+    q = int(input().strip())
+
+    query = []
+
+    for _ in range(q):
+        query.append(list(map(int, input().rstrip().split())))
+
+    ans = getMaxCharCount(s, query)
+
+    fptr.write('\n'.join(map(str, ans)))
+    fptr.write('\n')
+
+    fptr.close()
