@@ -1,0 +1,78 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+#
+# Complete the 'configureProjectPresentation' function below.
+#
+# The function is expected to return an INTEGER_ARRAY.
+# The function accepts following parameters:
+#  1. INTEGER n
+#  2. 2D_INTEGER_ARRAY friendships
+#
+
+def configureProjectPresentation(n, friendships):
+    banned = [2]
+    result = ''
+    i = 0
+    
+    remaining_friendships = friendships
+    
+    # find and ban 2's friends, as well as 1's non-friends
+    while i < len(friendships):
+        
+        if friendships[i][0] in banned:
+            if friendships[i][1] != 1:
+                banned.append(friendships[i][1])
+            del friendships[i]
+            i = -1
+                
+        elif friendships[i][1] in banned:
+            if friendships[i][0] != 1:
+                banned.append(friendships[i][0])
+            del friendships[i]
+            i = -1
+        
+        elif friendships[i][0] != 1 and friendships[i][1] != 1:
+            del friendships[i]
+            i = -1
+
+        i += 1
+        
+    for i in range(0, len(friendships)):
+        for j in range(0, 2):
+            if friendships[i][j] != 1:
+                result = result + str(friendships[i][j])
+        
+    return result
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    t = int(input().strip())
+
+    for t_itr in range(t):
+        first_multiple_input = input().rstrip().split()
+
+        n = int(first_multiple_input[0])
+
+        m = int(first_multiple_input[1])
+
+        freiendships = []
+
+        for _ in range(m):
+            freiendships.append(list(map(int, input().rstrip().split())))
+
+        result = configureProjectPresentation(n, freiendships)
+        if result == '':
+            fptr.write('-1')
+            fptr.write('\n')
+        else:
+            fptr.write(' '.join(map(str, result)))
+            fptr.write('\n')
+
+    fptr.close()
