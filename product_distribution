@@ -7,63 +7,69 @@ import re
 import sys
 
 #
-# Complete the 'maxScore' function below.
+# Complete the 'configureProjectPresentation' function below.
 #
-# The function is expected to return an INTEGER.
+# The function is expected to return an INTEGER_ARRAY.
 # The function accepts following parameters:
-#  1. INTEGER_ARRAY a
-#  2. INTEGER m
+#  1. INTEGER n
+#  2. 2D_INTEGER_ARRAY friendships
 #
 
-def maxScore(a, m):
+def configureProjectPresentation(n, friendships):
+    banned = [2]
+    result = ''
+    i = 0
     
-    # sort list
-    a.sort()
+    remaining_friendships = friendships
     
-    # number of full segments
-    segments = len(a) // m - 1
-    
-    # counters
-    i = 1
-    j = 0
-    
-    # arrangement scoring
-    score = 0
-    productSum = 0
-    
-    # find full segments
-    while i <= segments:
-        while j < m:
-            productSum += a[0]
-            a.pop(0)
-            j += 1
-        score += i * (productSum)
-        productSum = 0
-        j = 0
+    # find and ban 2's friends, as well as 1's non-friends
+    while i < len(friendships):
+        
+        if friendships[i][0] in banned:
+            if friendships[i][1] != 1:
+                banned.append(friendships[i][1])
+            del friendships[i]
+            i = -1
+                
+        elif friendships[i][1] in banned:
+            if friendships[i][0] != 1:
+                banned.append(friendships[i][0])
+            del friendships[i]
+            i = -1
+
         i += 1
-    
-    # find last segment
-    for x in a:
-        productSum += int(x)
-    score += (segments + 1) * productSum
-    
-    
-    return score % (10 ** 9 + 7)
-                      
+        
+    for i in range(0, len(friendships)):
+        if friendships[i][0] == 1:
+            result = result + str(friendships[i][1])
+        elif friendships[i][1] == 1:
+            result = result + str(friendships[i][0])
+        
+    return result
 
 if __name__ == '__main__':
     fptr = open(os.environ['OUTPUT_PATH'], 'w')
 
-    first_multiple_input = input().rstrip().split()
+    t = int(input().strip())
 
-    n = int(first_multiple_input[0])
+    for t_itr in range(t):
+        first_multiple_input = input().rstrip().split()
 
-    m = int(first_multiple_input[1])
+        n = int(first_multiple_input[0])
 
-    a = list(map(int, input().rstrip().split()))
+        m = int(first_multiple_input[1])
 
-    ans = maxScore(a, m)
+        freiendships = []
 
-    fptr.write(str(ans) + '\n')
+        for _ in range(m):
+            freiendships.append(list(map(int, input().rstrip().split())))
+
+        result = configureProjectPresentation(n, freiendships)
+        if result == '':
+            fptr.write('-1')
+            fptr.write('\n')
+        else:
+            fptr.write(' '.join(map(str, result)))
+            fptr.write('\n')
 
     fptr.close()
